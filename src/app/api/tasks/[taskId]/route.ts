@@ -31,7 +31,7 @@ export async function PATCH(
   if (status !== 'COMPLETED')
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
 
-  if (task.status !== 'PENDING')
+  if (task.status === 'COMPLETED')
     return NextResponse.json({ error: 'Task already completed' }, { status: 400 });
 
   // Mark task complete
@@ -66,24 +66,14 @@ export async function PATCH(
       [task.checkpoint_id],
     );
 
-    // Award checkpoint completion bonus
-    await awardCoins(userId, 30, 'CHECKPOINT_REWARD', 'Completed a checkpoint', task.checkpoint_id);
-
-    // Award a checkpoint badge
-    const badgeId = crypto.randomUUID();
-    await query(
-      `INSERT INTO badges (id, user_id, checkpoint_id, badge_type) VALUES (?, ?, ?, 'CHECKPOINT')`,
-      [badgeId, userId, task.checkpoint_id],
-    );
-
-    // Unlock the next checkpoint or mark roadmap complete
+    // Unlock the next checkpoint or mark roadmap complete — must run before optional steps
     const [checkpoint] = await query<any>(
       'SELECT roadmap_id, order_index FROM checkpoints WHERE id = ?',
       [task.checkpoint_id],
     );
     const [nextCheckpoint] = await query<any>(
-      `SELECT id FROM checkpoints WHERE roadmap_id = ? AND order_index = ?`,
-      [checkpoint.roadmap_id, checkpoint.order_index + 1],
+      `SELECT id FROM checkpoints WHERE roadmap_id = ? AND order_index > ? ORDER BY order_index ASC LIMIT 1`,
+      [checkpoint.roadmap_id, checkpoint.order_index],
     );
     if (nextCheckpoint) {
       await query(
@@ -91,7 +81,6 @@ export async function PATCH(
         [nextCheckpoint.id],
       );
     } else {
-      // All checkpoints done — mark roadmap complete
       await query(
         `UPDATE roadmaps SET status = 'COMPLETED' WHERE id = ?`,
         [checkpoint.roadmap_id],
@@ -99,6 +88,21 @@ export async function PATCH(
     }
 
     checkpointCompleted = true;
+
+    // Non-critical: award coins and badge (errors here must not block the unlock above)
+    try {
+      await awardCoins(userId, 30, 'TASK_REWARD', 'Completed a checkpoint', task.checkpoint_id);
+    } catch (e) {
+      console.error('[CHECKPOINT_COINS]', e);
+    }
+    try {
+      await query(
+        `INSERT INTO badges (id, user_id, checkpoint_id, badge_type) VALUES (?, ?, ?, 'CHECKPOINT')`,
+        [crypto.randomUUID(), userId, task.checkpoint_id],
+      );
+    } catch (e) {
+      console.error('[CHECKPOINT_BADGE]', e);
+    }
   }
 
   return NextResponse.json({

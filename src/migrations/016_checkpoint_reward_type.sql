@@ -1,0 +1,10 @@
+ALTER TABLE coin_transactions
+  MODIFY COLUMN type ENUM(
+    'TASK_REWARD',
+    'CHECKPOINT_REWARD',
+    'COMMUNITY_EARN',
+    'COMMUNITY_SPEND',
+    'SESSION_REDEEM',
+    'REFUND',
+    'ADMIN_GRANT'
+  ) NOT NULL;
