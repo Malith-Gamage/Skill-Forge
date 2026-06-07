@@ -34,10 +34,10 @@ export default async function ExpertProfilePage({ params }: { params: Promise<{ 
   )
 
   const coinBalance = profile?.coin_balance ?? 0
-  const canBook = coinBalance >= 100
+  const canBook = coinBalance >= 3000
   const avail = availConfig[expert.availability_status] ?? availConfig.UNAVAILABLE
   const isAvailable = expert.availability_status === 'AVAILABLE'
-  const shortfall = 100 - coinBalance
+  const shortfall = 3000 - coinBalance
   const sessionCount = Number(sessionRow?.session_count ?? 0)
 
   return (
@@ -102,7 +102,7 @@ export default async function ExpertProfilePage({ params }: { params: Promise<{ 
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
               </svg>
               <p className="text-xs text-gray-500">Cost</p>
-              <p className="text-sm font-bold text-amber-600">100 SCS</p>
+              <p className="text-sm font-bold text-amber-600">3,000 SCS</p>
             </div>
             <div className="bg-violet-50 rounded-xl p-3 text-center">
               <svg className="w-5 h-5 text-violet-500 mx-auto mb-1" fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24">
@@ -140,7 +140,7 @@ export default async function ExpertProfilePage({ params }: { params: Promise<{ 
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                   </svg>
-                  Book Session · 100 SCS
+                  Book Session · 3,000 SCS
                 </>
               ) : 'Insufficient coins'}
             </Link>

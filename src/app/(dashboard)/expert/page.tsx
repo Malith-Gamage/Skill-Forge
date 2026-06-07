@@ -2,6 +2,7 @@ import { getSession } from '@/lib/auth'
 import { query } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import JoinExpertModal from '@/components/expert/JoinExpertModal'
 
 export const metadata = { title: 'Expert Sessions — SkillForge' }
 
@@ -24,17 +25,36 @@ export default async function ExpertDirectoryPage() {
   const session = await getSession()
   if (!session) redirect('/login')
 
-  const experts = await query<{
-    id: string; name: string; field_of_expertise: string
-    bio: string | null; availability_status: string; completed_sessions: number
-  }>(
-    `SELECT ie.id, ie.name, ie.field_of_expertise, ie.bio, ie.availability_status,
-            SUM(CASE WHEN es.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed_sessions
-     FROM industry_experts ie
-     LEFT JOIN expert_sessions es ON es.expert_id = ie.id
-     GROUP BY ie.id, ie.name, ie.field_of_expertise, ie.bio, ie.availability_status, ie.created_at
-     ORDER BY ie.availability_status ASC, ie.created_at DESC`
-  )
+  const [experts, userRow] = await Promise.all([
+    query<{
+      id: string; name: string; field_of_expertise: string
+      bio: string | null; availability_status: string; completed_sessions: number
+    }>(
+      `SELECT ie.id, ie.name, ie.field_of_expertise, ie.bio, ie.availability_status,
+              SUM(CASE WHEN es.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed_sessions
+       FROM industry_experts ie
+       LEFT JOIN expert_sessions es ON es.expert_id = ie.id
+       GROUP BY ie.id, ie.name, ie.field_of_expertise, ie.bio, ie.availability_status, ie.created_at
+       ORDER BY ie.availability_status ASC, ie.created_at DESC`
+    ),
+    query<{ name: string }>(
+      `SELECT name FROM users WHERE id = ? LIMIT 1`,
+      [session.userId]
+    ),
+  ])
+
+  let userApplication: { expert_id: string } | null = null
+  try {
+    const [app] = await query<{ expert_id: string }>(
+      `SELECT expert_id FROM user_expert_map WHERE user_id = ? LIMIT 1`,
+      [session.userId]
+    )
+    userApplication = app ?? null
+  } catch {
+    userApplication = null
+  }
+
+  const userName = userRow[0]?.name ?? ''
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -46,14 +66,29 @@ export default async function ExpertDirectoryPage() {
         <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Expert Sessions</h1>
-            <p className="text-indigo-200 text-sm mt-1">Book 1-on-1 sessions with industry professionals · 100 SCS per session</p>
+            <p className="text-indigo-200 text-sm mt-1">Book 1-on-1 sessions with industry professionals · 3,000 SCS per session</p>
           </div>
-          <Link href="/expert/sessions" className="shrink-0 flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-            </svg>
-            My Sessions
-          </Link>
+          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            {userApplication ? (
+              <Link
+                href={`/expert/${userApplication.expert_id}`}
+                className="flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+                Your Expert Profile
+              </Link>
+            ) : (
+              <JoinExpertModal userName={userName} />
+            )}
+            <Link href="/expert/sessions" className="shrink-0 flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+              </svg>
+              My Sessions
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -103,7 +138,7 @@ export default async function ExpertDirectoryPage() {
                       <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
                       </svg>
-                      <span className="text-sm font-bold text-amber-600">100 SCS</span>
+                      <span className="text-sm font-bold text-amber-600">3,000 SCS</span>
                     </div>
                     {completedSessions > 0 && (
                       <span className="text-xs text-gray-400">{completedSessions} session{completedSessions !== 1 ? 's' : ''}</span>
