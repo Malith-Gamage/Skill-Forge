@@ -78,15 +78,9 @@ export default function Sidebar({ role }: { role: string }) {
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-40 w-56 bg-white border-r border-gray-100 flex flex-col transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="h-16 flex items-center px-5 border-b border-gray-100 shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center" aria-hidden="true">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" />
-              </svg>
-            </div>
-            <span className="font-bold text-gray-900 text-sm">SkillForge</span>
-          </div>
+        <div className="w-full border-b border-gray-100 shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/p1.png" alt="SkillForge" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">

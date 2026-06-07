@@ -329,3 +329,94 @@ body {
   pointer-events: none;
   z-index: 2;
 }
+
+/* ── Badge page animations ─────────────────────────────────────── */
+
+@keyframes badge-shine {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(320%)  skewX(-20deg); }
+}
+
+@keyframes badge-glow-gold {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(251, 191, 36, 0.55); }
+  50%       { box-shadow: 0 0 0 14px rgba(251, 191, 36, 0);   }
+}
+
+@keyframes badge-trophy-float {
+  0%, 100% { transform: translateY(0px)  rotate(-3deg); }
+  50%       { transform: translateY(-8px) rotate(3deg);  }
+}
+
+@keyframes badge-enter {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes badge-cp-bar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+.badge-shine-card {
+  position: relative;
+  overflow: hidden;
+}
+.badge-shine-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.28), transparent);
+  animation: badge-shine 3.8s ease-in-out infinite 1.8s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.badge-glow-gold    { animation: badge-glow-gold    2.6s ease-in-out infinite; }
+.badge-trophy-float { animation: badge-trophy-float 4s   ease-in-out infinite; }
+.badge-enter        { animation: badge-enter 0.5s cubic-bezier(0.2, 0, 0, 1) both; }
+
+.badge-cp-bar {
+  animation: badge-cp-bar 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ── Community page ─────────────────────────────────────────────── */
+
+.comm-post-card {
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1),
+              border-color 0.22s ease;
+}
+.comm-post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.09), 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-color: #c7d2fe;
+}
+
+/* Scrollbar hide — used for horizontal badge scroll rows */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Badge card hover */
+.badge-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+.badge-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.12), 0 4px 12px rgba(0,0,0,0.05);
+}
+.badge-card-gold:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 44px rgba(251, 191, 36, 0.28), 0 4px 12px rgba(0,0,0,0.05);
+}
+.badge-card-community:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
