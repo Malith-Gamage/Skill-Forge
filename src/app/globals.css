@@ -135,6 +135,46 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Dashboard entrance animations ───────────────────────────────── */
+
+@keyframes dash-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dash-slide-right {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes dash-scale-up {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.dash-fade-up     { animation: dash-fade-up    0.55s cubic-bezier(0.2, 0, 0, 1) both; }
+.dash-slide-right { animation: dash-slide-right 0.5s  cubic-bezier(0.2, 0, 0, 1) both; }
+.dash-scale-up    { animation: dash-scale-up   0.45s  cubic-bezier(0.2, 0, 0, 1) both; }
+
+.dash-d-1 { animation-delay: 0.08s; }
+.dash-d-2 { animation-delay: 0.16s; }
+.dash-d-3 { animation-delay: 0.24s; }
+.dash-d-4 { animation-delay: 0.32s; }
+.dash-d-5 { animation-delay: 0.40s; }
+.dash-d-6 { animation-delay: 0.48s; }
+.dash-d-7 { animation-delay: 0.56s; }
+.dash-d-8 { animation-delay: 0.64s; }
+
+/* Roadmap card hover lift */
+.roadmap-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+.roadmap-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.10), 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
 /* ── Sparkle pulse ──────────────────────────────────────────────── */
 
 @keyframes sparkle-pulse {
