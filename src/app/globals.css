@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f9fa;
+  --foreground: #111827;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-bg: var(--background);
+  --color-primary: #4f46e5;
+  --color-primary-end: #7c3aed;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-indigo-600: #4f46e5;
+  --color-violet-700: #6d28d9;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ── Landing page animations ─────────────────────────────────────── */
+
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-22px) translateX(14px); }
+  66%       { transform: translateY(-14px) translateX(-8px); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes badge-pop {
+  0%   { opacity: 0; transform: scale(0.85); }
+  60%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.animate-float-orb   { animation: float-orb 9s ease-in-out infinite; }
+.animate-float-orb-2 { animation: float-orb 12s ease-in-out infinite 2.5s; }
+.animate-float-orb-3 { animation: float-orb 7s ease-in-out infinite 5s; }
+
+.animate-gradient-text {
+  background-size: 200% auto;
+  animation: gradient-shift 5s linear infinite;
+}
+
+.hero-in   { animation: hero-in 0.75s ease-out both; }
+.hero-in-1 { animation: hero-in 0.75s ease-out 0.18s both; }
+.hero-in-2 { animation: hero-in 0.75s ease-out 0.36s both; }
+.hero-in-3 { animation: hero-in 0.75s ease-out 0.54s both; }
+.hero-in-4 { animation: hero-in 0.75s ease-out 0.7s both; }
+
+.badge-pop { animation: badge-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Scroll-triggered fade-up */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+}
+.animate-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Feature cards */
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 24px 48px rgba(79, 70, 229, 0.11), 0 8px 16px rgba(0,0,0,0.04);
+  border-color: rgba(99, 102, 241, 0.32);
+}
+.feature-card .feat-icon {
+  transition: transform 0.3s ease;
+}
+.feature-card:hover .feat-icon {
+  transform: scale(1.14) rotate(-4deg);
+}
+
+/* Stat cards */
+.stat-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(79, 70, 229, 0.13);
+  border-color: rgba(99, 102, 241, 0.28);
+}
+
+/* Step cards */
+.step-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.07);
+}
+.step-card .step-num {
+  transition: transform 0.3s ease;
+}
+.step-card:hover .step-num {
+  transform: scale(1.12);
+}
+
+/* ── Hero floating achievement cards ─────────────────────────────── */
+
+@keyframes float-card {
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-13px); }
+}
+
+.float-card-1 { animation: float-card 4.6s ease-in-out infinite; }
+.float-card-2 { animation: float-card 5.3s ease-in-out infinite 1.1s; }
+.float-card-3 { animation: float-card 3.9s ease-in-out infinite 2.3s; }
+.float-card-4 { animation: float-card 5.0s ease-in-out infinite 0.6s; }
+
+/* ── Rotating word ──────────────────────────────────────────────── */
+
+@keyframes word-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Sparkle pulse ──────────────────────────────────────────────── */
+
+@keyframes sparkle-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.8; transform: scale(1.6); }
+}
+
+.sparkle-dot { animation: sparkle-pulse 3s ease-in-out infinite; }
+.sparkle-dot-2 { animation: sparkle-pulse 4s ease-in-out infinite 1s; }
+.sparkle-dot-3 { animation: sparkle-pulse 3.5s ease-in-out infinite 2s; }
+.sparkle-dot-4 { animation: sparkle-pulse 5s ease-in-out infinite 0.5s; }
+.sparkle-dot-5 { animation: sparkle-pulse 4.2s ease-in-out infinite 1.8s; }

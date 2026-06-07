@@ -1,0 +1,9 @@
+node_modules/
+.next/
+build/
+dist/
+out/
+*.map
+*.md
+.env
+.env.local
