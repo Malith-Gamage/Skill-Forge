@@ -21,61 +21,109 @@ export default function CheckpointSidebar({ checkpoints }: { checkpoints: Checkp
     router.push(`${pathname}?cp=${id}`)
   }
 
+  const doneCount = checkpoints.filter((c) => c.status === 'COMPLETED').length
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden sticky top-4">
-      <div className="px-4 py-3 border-b border-gray-100">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Checkpoints</p>
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm sticky top-4 overflow-hidden roadmap-slide-left rm-d-1">
+      {/* Header */}
+      <div className="px-4 pt-4 pb-3 border-b border-gray-100 bg-linear-to-br from-gray-50 to-white">
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Checkpoints</p>
+        <div className="flex items-center justify-between mt-1">
+          <p className="text-xs font-semibold text-gray-600">{doneCount} / {checkpoints.length} done</p>
+          <span className="text-[10px] font-bold text-indigo-500">
+            {checkpoints.length > 0 ? Math.round((doneCount / checkpoints.length) * 100) : 0}%
+          </span>
+        </div>
+        <div className="mt-1.5 h-1 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-indigo-400 rounded-full transition-all duration-700"
+            style={{ width: `${checkpoints.length > 0 ? Math.round((doneCount / checkpoints.length) * 100) : 0}%` }}
+          />
+        </div>
       </div>
-      <div className="divide-y divide-gray-50">
-        {checkpoints.map((cp) => {
+
+      {/* Timeline list */}
+      <div className="p-3">
+        {checkpoints.map((cp, idx) => {
           const isActive = activeCp ? cp.id === activeCp : cp.status === 'IN_PROGRESS'
+          const isLast = idx === checkpoints.length - 1
+          const isLocked = cp.status === 'LOCKED'
+          const pct = cp.total_tasks > 0 ? Math.round((cp.completed_tasks / cp.total_tasks) * 100) : 0
+
           return (
-            <button
+            <div
               key={cp.id}
-              disabled={cp.status === 'LOCKED'}
-              onClick={() => select(cp.id)}
-              className={`w-full flex items-start gap-2.5 px-3 py-3 text-left transition-colors ${
-                isActive
-                  ? 'bg-indigo-50'
-                  : cp.status === 'LOCKED'
-                  ? 'cursor-not-allowed opacity-60'
-                  : 'hover:bg-gray-50 cursor-pointer'
-              }`}
+              className={`flex items-stretch gap-0 ${!isLocked ? 'cursor-pointer' : 'cursor-not-allowed'} roadmap-fade-up rm-d-${Math.min(idx + 1, 8)}`}
+              onClick={!isLocked ? () => select(cp.id) : undefined}
             >
-              {cp.status === 'COMPLETED' ? (
-                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
+              {/* Timeline track */}
+              <div className="flex flex-col items-center w-8 shrink-0">
+                {/* Status icon */}
+                <div className={`mt-2.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-200 ${
+                  cp.status === 'COMPLETED'
+                    ? 'bg-green-500 shadow-sm'
+                    : cp.status === 'IN_PROGRESS'
+                    ? `bg-indigo-600 shadow-md ${isActive ? 'cp-active-pulse' : ''}`
+                    : 'border-2 border-gray-200 bg-white'
+                }`}>
+                  {cp.status === 'COMPLETED' ? (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  ) : cp.status === 'IN_PROGRESS' ? (
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  ) : (
+                    <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
+                    </svg>
+                  )}
                 </div>
-              ) : cp.status === 'IN_PROGRESS' ? (
-                <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <div className="w-2 h-2 rounded-full bg-white" />
-                </div>
-              ) : (
-                <div className="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                  </svg>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className={`text-xs font-medium leading-snug ${
-                  cp.status === 'LOCKED'
+
+                {/* Connector line */}
+                {!isLast && (
+                  <div className={`mt-1 w-0.5 flex-1 ${
+                    cp.status === 'COMPLETED' ? 'bg-green-200' : 'bg-gray-100'
+                  }`} style={{ minHeight: 8 }} />
+                )}
+              </div>
+
+              {/* Content */}
+              <div className={`flex-1 pt-2 pb-3 pl-1.5 pr-2 rounded-xl transition-all duration-200 mb-0 ${
+                isActive
+                  ? 'bg-indigo-50 ring-1 ring-indigo-100'
+                  : !isLocked
+                  ? 'hover:bg-gray-50'
+                  : 'opacity-50'
+              }`}>
+                <p className={`text-xs font-semibold leading-snug ${
+                  isLocked
                     ? 'text-gray-400'
                     : isActive
-                    ? 'text-indigo-800'
+                    ? 'text-indigo-700'
+                    : cp.status === 'COMPLETED'
+                    ? 'text-gray-500'
                     : 'text-gray-700'
                 }`}>
                   {cp.title}
                 </p>
-                {cp.status !== 'LOCKED' && (
-                  <p className="text-[10px] text-gray-400 mt-0.5">
-                    {cp.completed_tasks}/{cp.total_tasks} tasks
-                  </p>
+
+                {!isLocked && (
+                  <div className="mt-1.5">
+                    <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${
+                          cp.status === 'COMPLETED' ? 'bg-green-400' : 'bg-indigo-400'
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <p className="text-[9px] text-gray-400 mt-0.5 font-medium">
+                      {cp.completed_tasks}/{cp.total_tasks} tasks
+                    </p>
+                  </div>
                 )}
               </div>
-            </button>
+            </div>
           )
         })}
       </div>
