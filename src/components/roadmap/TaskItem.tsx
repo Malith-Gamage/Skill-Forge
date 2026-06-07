@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface Task {
   id: string
@@ -12,11 +12,12 @@ interface Task {
 
 export default function TaskItem({ task }: { task: Task }) {
   const router = useRouter()
+  const pathname = usePathname()
   const [status, setStatus] = useState(task.status)
   const [loading, setLoading] = useState(false)
 
   async function complete() {
-    if (status !== 'PENDING' || loading) return
+    if (status === 'COMPLETED' || loading) return
     setLoading(true)
 
     try {
@@ -25,8 +26,18 @@ export default function TaskItem({ task }: { task: Task }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'COMPLETED' }),
       })
+
       if (res.ok) {
+        const data = await res.json()
         setStatus('COMPLETED')
+        if (data.checkpointCompleted) {
+          // Strip ?cp= so the page auto-selects the newly unlocked checkpoint
+          router.push(pathname)
+        } else {
+          router.refresh()
+        }
+      } else {
+        // Sync UI with actual DB state (task may already be COMPLETED in DB)
         router.refresh()
       }
     } finally {

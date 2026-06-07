@@ -50,9 +50,9 @@ export async function POST(req: NextRequest) {
       const checkpointId = crypto.randomUUID();
       const status = i === 0 ? 'IN_PROGRESS' : 'LOCKED';
       await query(
-        `INSERT INTO checkpoints (id, roadmap_id, title, order_index, status, coins_awarded)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [checkpointId, roadmapId, cp.title, cp.order_index, status, cp.coins_awarded],
+        `INSERT INTO checkpoints (id, roadmap_id, title, description, order_index, status, coins_awarded)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [checkpointId, roadmapId, cp.title, cp.description ?? null, i, status, cp.coins_awarded],
       );
 
       const tasks = Array.isArray(cp.tasks) ? cp.tasks : [];
@@ -64,6 +64,25 @@ export async function POST(req: NextRequest) {
           `INSERT INTO daily_tasks (id, checkpoint_id, user_id, title, coin_reward)
            VALUES (?, ?, ?, ?, ?)`,
           [crypto.randomUUID(), checkpointId, userId, taskTitle, taskReward],
+        );
+      }
+
+      const rawResources = Array.isArray(cp.resources) ? cp.resources : [];
+      const typeOrder = ['VIDEO', 'COURSE', 'ARTICLE'];
+      for (let ri = 0; ri < rawResources.length; ri++) {
+        const raw = rawResources[ri];
+        // Normalise: AI sometimes returns plain URL strings instead of objects
+        const res = typeof raw === 'string'
+          ? { url: raw, title: '', type: typeOrder[ri] ?? 'ARTICLE' }
+          : raw;
+        if (!res.url) continue;
+        const validTypes = ['VIDEO', 'ARTICLE', 'COURSE', 'PODCAST'];
+        const type = validTypes.includes(res.type?.toUpperCase?.()) ? res.type.toUpperCase() : (typeOrder[ri] ?? 'ARTICLE');
+        const title = res.title || `${type.charAt(0) + type.slice(1).toLowerCase()}: ${cp.title}`;
+        await query(
+          `INSERT INTO resources (id, checkpoint_id, title, type, url, skill_domain)
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [crypto.randomUUID(), checkpointId, title, type, res.url, skill],
         );
       }
     }
