@@ -4,6 +4,38 @@ import { query } from '@/lib/db';
 import { deductCoins } from '@/lib/coins';
 import { bookSessionSchema } from '@/lib/validators';
 
+async function notifyExpertOfBooking(
+  expertId: string,
+  bookerUserId: string,
+  sessionId: string,
+  skillDomain: string | null | undefined,
+  scheduledDate: string,
+) {
+  try {
+    const [[expertRow], [userRow], [expertMapping]] = await Promise.all([
+      query<{ name: string }>(`SELECT name FROM industry_experts WHERE id = ?`, [expertId]),
+      query<{ name: string }>(`SELECT name FROM users WHERE id = ?`, [bookerUserId]),
+      query<{ user_id: string }>(`SELECT user_id FROM user_expert_map WHERE expert_id = ?`, [expertId]),
+    ]);
+    if (!expertMapping || !userRow) return;
+    const dateStr = new Date(scheduledDate).toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    });
+    await query(
+      `INSERT INTO notifications (id, user_id, message, type, reference_id)
+       VALUES (?, ?, ?, 'SESSION_BOOKING', ?)`,
+      [
+        crypto.randomUUID(),
+        expertMapping.user_id,
+        `New booking from ${userRow.name}: "${skillDomain ?? 'General session'}" on ${dateStr}`,
+        sessionId,
+      ],
+    );
+  } catch {
+    // Non-critical — session already created
+  }
+}
+
 export async function GET(req: NextRequest) {
   const userId = req.headers.get('x-user-id');
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -35,6 +67,12 @@ export async function POST(req: NextRequest) {
   const coinCost  = 3000;
   const sessionId = crypto.randomUUID();
 
+  // MySQL DATETIME(3) requires 'YYYY-MM-DD HH:MM:SS.mmm', not ISO 8601 'Z' suffix
+  const mysqlDate = new Date(scheduled_date)
+    .toISOString()
+    .replace('T', ' ')
+    .replace('Z', '');
+
   try {
     await deductCoins(userId, coinCost, 'SESSION_REDEEM', 'Booked an expert session', sessionId);
   } catch {
@@ -45,8 +83,11 @@ export async function POST(req: NextRequest) {
     `INSERT INTO expert_sessions
       (id, user_id, expert_id, scheduled_date, duration_minutes, coin_cost, skill_domain, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [sessionId, userId, expert_id, scheduled_date, duration_minutes, coinCost, skill_domain ?? null, notes ?? null],
+    [sessionId, userId, expert_id, mysqlDate, duration_minutes, coinCost, skill_domain ?? null, notes ?? null],
   );
+
+  // Fire-and-forget: notify the expert that a booking was made
+  notifyExpertOfBooking(expert_id, userId, sessionId, skill_domain, scheduled_date);
 
   return NextResponse.json({ id: sessionId }, { status: 201 });
 }
