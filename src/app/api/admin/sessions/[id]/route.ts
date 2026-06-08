@@ -39,7 +39,7 @@ export async function PATCH(
     await awardCoins(
       session.user_id,
       session.coin_cost,
-      'SESSION_REFUND',
+      'REFUND',
       'Expert session rejected — refund',
       id,
     );

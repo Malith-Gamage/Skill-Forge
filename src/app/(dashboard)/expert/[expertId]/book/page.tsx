@@ -13,10 +13,11 @@ export default function BookSessionPage({ params }: { params: Promise<{ expertId
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isNetworkError, setIsNetworkError] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function submitBooking() {
     setError('')
+    setIsNetworkError(false)
     setLoading(true)
     try {
       const res = await fetch('/api/expert/sessions', {
@@ -34,10 +35,16 @@ export default function BookSessionPage({ params }: { params: Promise<{ expertId
       if (!res.ok) { setError(data.error ?? 'Failed to book session'); return }
       router.push('/expert/sessions')
     } catch {
-      setError('Network error — please try again')
+      setError('Network error — please check your connection and try again.')
+      setIsNetworkError(true)
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    submitBooking()
   }
 
   const minDate = new Date()
@@ -159,11 +166,26 @@ export default function BookSessionPage({ params }: { params: Promise<{ expertId
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
-                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+                  <svg className="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
                   </svg>
-                  {error}
+                  <div>
+                    <p>{error}</p>
+                    {isNetworkError && (
+                      <button
+                        type="button"
+                        onClick={submitBooking}
+                        disabled={loading}
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-red-700 hover:text-red-900 underline underline-offset-2 disabled:opacity-50"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        Retry
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

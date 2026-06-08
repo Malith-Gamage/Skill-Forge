@@ -19,7 +19,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const userId = req.headers.get('x-user-id');
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const userEmail = req.headers.get('x-user-email');
+    if (!userId || !userEmail) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
     const { fullName, bio, fieldOfExpertise, skills, yearsExperience, hourlyRate, linkedinUrl } = body;
@@ -58,11 +59,12 @@ export async function POST(req: NextRequest) {
 
     // Add to industry_experts so they appear in the listing and can be booked
     await query(
-      `INSERT INTO industry_experts (id, name, bio, field_of_expertise, availability_status, rate_per_hour)
-       VALUES (?, ?, ?, ?, 'AVAILABLE', ?)`,
+      `INSERT INTO industry_experts (id, name, email, bio, field_of_expertise, availability_status, rate_per_hour)
+       VALUES (?, ?, ?, ?, ?, 'AVAILABLE', ?)`,
       [
         expertId,
         fullName.trim(),
+        userEmail,
         bio?.trim() || null,
         fieldOfExpertise.trim(),
         Number(hourlyRate) || 100,
