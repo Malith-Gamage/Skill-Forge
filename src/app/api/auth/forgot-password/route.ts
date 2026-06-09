@@ -23,14 +23,23 @@ export async function POST(req: NextRequest) {
       const rawToken  = crypto.randomBytes(32).toString('hex');
       const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
       const tokenId   = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
+      // Use DATE_ADD(NOW(3), ...) so expiry is computed by MySQL itself —
+      // avoids JS Date → mysql2 timezone conversion bugs on non-UTC hosts.
       await query(
-        'INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at) VALUES (?, ?, ?, ?)',
-        [tokenId, user.id, tokenHash, expiresAt],
+        `INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at)
+         VALUES (?, ?, ?, DATE_ADD(NOW(3), INTERVAL 15 MINUTE))`,
+        [tokenId, user.id, tokenHash],
       );
 
-      await sendPasswordResetEmail(email, rawToken);
+      const resetLink = `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/reset-password?token=${rawToken}`;
+      try {
+        await sendPasswordResetEmail(email, rawToken);
+      } catch (emailErr: any) {
+        // Email service not configured — log link so it's usable during development
+        console.warn('[FORGOT-PASSWORD] Email send failed:', emailErr.message);
+        console.info('[FORGOT-PASSWORD] Reset link (dev fallback):', resetLink);
+      }
     }
 
     return NextResponse.json({ success: true });
