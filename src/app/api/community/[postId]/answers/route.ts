@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { query } from '@/lib/db';
-import { awardCoins } from '@/lib/coins';
+import { awardCoins, deductCoins } from '@/lib/coins';
 import { answerSchema } from '@/lib/validators';
 import { analyzeAnswer } from '@/lib/openai';
 
@@ -41,15 +41,36 @@ export async function POST(
   if (!parsed.success)
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
 
-  const answerId   = crypto.randomUUID();
-  const coinReward = 100;
-
-  // Fetch the question so the analysis has context
   const [post] = await query<{ title: string; content: string }>(
     'SELECT title, content FROM community_posts WHERE id = ?',
     [postId],
   );
   if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+
+  // Evaluate quality BEFORE saving — only post if Excellent or Good
+  let analysis = null;
+  try {
+    analysis = await analyzeAnswer(post.title, post.content, parsed.data.content);
+  } catch {
+    // If OpenAI is unavailable, allow the answer through
+  }
+
+  const isAcceptable = !analysis || analysis.quality === 'Excellent' || analysis.quality === 'Good';
+
+  if (!isAcceptable) {
+    // Deduct 30 coins as a penalty for a wrong answer
+    let coinDelta = 0;
+    try {
+      await deductCoins(userId, 30, 'COMMUNITY_SPEND', 'Wrong answer penalty', postId);
+      coinDelta = -30;
+    } catch {
+      // Insufficient balance — no deduction, coinDelta stays 0
+    }
+    return NextResponse.json({ posted: false, analysis, coinDelta }, { status: 200 });
+  }
+
+  const answerId   = crypto.randomUUID();
+  const coinReward = 50;
 
   await query(
     `INSERT INTO community_answers (id, post_id, user_id, content, coin_reward)
@@ -59,17 +80,12 @@ export async function POST(
 
   await awardCoins(userId, coinReward, 'COMMUNITY_EARN', 'Answered a community question', answerId);
 
-  // Analyse the answer with OpenAI; store result but don't fail the request if it errors
-  let analysis = null;
-  try {
-    analysis = await analyzeAnswer(post.title, post.content, parsed.data.content);
+  if (analysis) {
     await query(
       'UPDATE community_answers SET ai_analysis = ? WHERE id = ?',
       [JSON.stringify(analysis), answerId],
     );
-  } catch {
-    // analysis is non-critical — answer is already saved
   }
 
-  return NextResponse.json({ id: answerId, analysis }, { status: 201 });
+  return NextResponse.json({ posted: true, id: answerId, analysis, coinDelta: coinReward }, { status: 201 });
 }

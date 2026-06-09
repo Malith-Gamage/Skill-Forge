@@ -38,17 +38,49 @@ export default async function LeaderboardPage() {
 
   const rows = await query<{
     rank: number; total_answers: number; coins_earned: number;
-    badges_count: number; updated_at: string; name: string; user_id: string
+    badges_count: number; name: string; user_id: string
   }>(
-    `SELECT l.rank, l.total_answers, l.coins_earned, l.badges_count, l.updated_at,
-            u.name, u.id AS user_id
-     FROM leaderboard l
-     JOIN users u ON u.id = l.user_id
-     ORDER BY (l.rank IS NULL), l.rank
+    `SELECT
+       u.id                                                                   AS user_id,
+       u.name,
+       p.total_coins_earned                                                   AS coins_earned,
+       RANK() OVER (ORDER BY p.total_coins_earned DESC, u.name ASC)          AS \`rank\`,
+       COALESCE(ans.total_answers, 0)                                        AS total_answers,
+       COALESCE(bdg.badges_count,  0)                                        AS badges_count
+     FROM users u
+     JOIN profiles p ON p.user_id = u.id
+     LEFT JOIN (
+       SELECT user_id, COUNT(*) AS total_answers
+       FROM community_answers WHERE is_accepted = 1
+       GROUP BY user_id
+     ) ans ON ans.user_id = u.id
+     LEFT JOIN (
+       SELECT user_id, COUNT(*) AS badges_count
+       FROM badges GROUP BY user_id
+     ) bdg ON bdg.user_id = u.id
+     ORDER BY p.total_coins_earned DESC, u.name ASC
      LIMIT 50`
   )
 
+  // If current user is outside top-50, fetch their rank separately
   const myRank = rows.find((r) => r.user_id === session.userId)
+  const myRankFallback = myRank ? null : await query<{
+    rank: number; coins_earned: number; total_answers: number
+  }>(
+    `SELECT
+       CAST(
+         (SELECT COUNT(*) FROM profiles p2 WHERE p2.total_coins_earned > p.total_coins_earned) + 1
+       AS UNSIGNED)                                                           AS \`rank\`,
+       p.total_coins_earned                                                   AS coins_earned,
+       COALESCE((
+         SELECT COUNT(*) FROM community_answers
+         WHERE user_id = ? AND is_accepted = 1
+       ), 0)                                                                  AS total_answers
+     FROM profiles p WHERE p.user_id = ?`,
+    [session.userId, session.userId]
+  ).then((r) => r[0] ?? null)
+
+  const myEntry = myRank ?? (myRankFallback ? { ...myRankFallback, user_id: session.userId, name: '' } : null)
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -74,14 +106,14 @@ export default async function LeaderboardPage() {
             Top contributors ranked by coins earned
           </p>
 
-          {myRank && (
+          {myEntry && (
             <div className="mt-5 inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2.5">
               <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Your rank</span>
-              <span className="text-xl font-extrabold text-white">#{myRank.rank}</span>
+              <span className="text-xl font-extrabold text-white">#{myEntry.rank}</span>
               <span className="w-px h-4 bg-white/20" />
-              <span className="text-xs text-indigo-200">{Number(myRank.coins_earned).toLocaleString()} pts</span>
+              <span className="text-xs text-indigo-200">{Number(myEntry.coins_earned).toLocaleString()} pts</span>
               <span className="w-px h-4 bg-white/20" />
-              <span className="text-xs text-indigo-200">{myRank.total_answers} answers</span>
+              <span className="text-xs text-indigo-200">{myEntry.total_answers} answers</span>
             </div>
           )}
         </div>
@@ -189,7 +221,7 @@ export default async function LeaderboardPage() {
 
       {rows.length > 0 && (
         <p className="text-xs text-gray-400 text-center dash-fade-up dash-d-3">
-          Updated {new Date(rows[0].updated_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
+          Rankings update in real time based on coins earned
         </p>
       )}
     </div>

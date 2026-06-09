@@ -24,12 +24,11 @@ export async function POST(req: NextRequest) {
      LEFT JOIN profiles p           ON p.user_id = u.id
      LEFT JOIN badges b             ON b.user_id = u.id
      GROUP BY u.id
-     AS src
      ON DUPLICATE KEY UPDATE
-       total_answers = src.total_answers,
-       coins_earned  = src.coins_earned,
-       badges_count  = src.badges_count,
-       \`rank\`      = src.\`rank\`,
+       total_answers = VALUES(total_answers),
+       coins_earned  = VALUES(coins_earned),
+       badges_count  = VALUES(badges_count),
+       \`rank\`      = VALUES(\`rank\`),
        updated_at    = NOW(3)`,
   );
 

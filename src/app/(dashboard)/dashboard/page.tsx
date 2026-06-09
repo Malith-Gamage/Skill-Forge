@@ -57,10 +57,19 @@ export default async function DashboardPage() {
   )
 
   const leaderboard = await query<{ rank: number; coins_earned: number; badges_count: number; name: string; user_id: string }>(
-    `SELECT l.rank, l.coins_earned, l.badges_count, u.name, u.id AS user_id
-     FROM leaderboard l
-     JOIN users u ON u.id = l.user_id
-     ORDER BY (l.rank IS NULL), l.rank
+    `SELECT
+       u.id                                                          AS user_id,
+       u.name,
+       p.total_coins_earned                                         AS coins_earned,
+       RANK() OVER (ORDER BY p.total_coins_earned DESC, u.name ASC) AS \`rank\`,
+       COALESCE(bdg.badges_count, 0)                               AS badges_count
+     FROM users u
+     JOIN profiles p ON p.user_id = u.id
+     LEFT JOIN (
+       SELECT user_id, COUNT(*) AS badges_count
+       FROM badges GROUP BY user_id
+     ) bdg ON bdg.user_id = u.id
+     ORDER BY p.total_coins_earned DESC, u.name ASC
      LIMIT 5`
   )
 

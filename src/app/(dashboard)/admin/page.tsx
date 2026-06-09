@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
   if (session.role !== 'ADMIN') redirect('/dashboard')
 
   const [[dau], [totalUsers], [suspendedUsers], [totalRoadmaps], [activeRoadmaps], [completedRoadmaps],
-    [coinCirculation], [coinsIssuedToday], [postsToday], [totalPosts], [pendingSessions]] = await Promise.all([
+    [coinCirculation], [coinsIssuedToday], [postsToday], [totalPosts], [pendingSessions], [confirmedSessions]] = await Promise.all([
     query<{ n: number }>(`SELECT COUNT(DISTINCT user_id) AS n FROM coin_transactions WHERE DATE(created_at) = CURDATE()`),
     query<{ n: number }>(`SELECT COUNT(*) AS n FROM users`),
     query<{ n: number }>(`SELECT COUNT(*) AS n FROM users WHERE status = 'SUSPENDED'`),
@@ -40,6 +40,7 @@ export default async function AdminDashboardPage() {
     query<{ n: number }>(`SELECT COUNT(*) AS n FROM community_posts WHERE DATE(created_at) = CURDATE()`),
     query<{ n: number }>(`SELECT COUNT(*) AS n FROM community_posts`),
     query<{ n: number }>(`SELECT COUNT(*) AS n FROM expert_sessions WHERE status = 'PENDING'`),
+    query<{ n: number }>(`SELECT COUNT(*) AS n FROM expert_sessions WHERE status = 'CONFIRMED'`),
   ])
 
   const pending = Number(pendingSessions?.n ?? 0)
@@ -70,6 +71,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <StatCard label="Community Posts" value={Number(totalPosts?.n ?? 0)} sub={`${Number(postsToday?.n ?? 0)} today`} />
         <StatCard label="Pending Sessions" value={pending} sub="awaiting confirmation" color={pending > 0 ? 'text-orange-600' : 'text-gray-900'} />
+        <StatCard label="Confirmed Sessions" value={Number(confirmedSessions?.n ?? 0)} sub="upcoming sessions" color="text-emerald-600" />
       </div>
 
       <div>
