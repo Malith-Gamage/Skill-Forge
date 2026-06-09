@@ -7,19 +7,19 @@ export async function GET(req: NextRequest) {
 
   const rows = await query(
     `SELECT
-       u.id                                                                   AS user_id,
-       u.name                                                                 AS user_name,
-       p.total_coins_earned                                                   AS coins_earned,
-       RANK() OVER (ORDER BY p.total_coins_earned DESC, u.name ASC)          AS \`rank\`,
-       COALESCE(ans.total_answers, 0)                                        AS answers_given,
-       COALESCE(bdg.badges_count,  0)                                        AS badges_count
+       u.id                                                                          AS user_id,
+       u.name                                                                        AS user_name,
+       p.total_coins_earned                                                          AS coins_earned,
+       RANK() OVER (ORDER BY p.total_coins_earned DESC, u.name ASC)                 AS \`rank\`,
+       COALESCE(qst.questions_posted, 0)                                             AS questions_posted,
+       COALESCE(bdg.badges_count,    0)                                             AS badges_count
      FROM users u
      JOIN profiles p ON p.user_id = u.id
      LEFT JOIN (
-       SELECT user_id, COUNT(*) AS total_answers
-       FROM community_answers WHERE is_accepted = 1
+       SELECT user_id, COUNT(*) AS questions_posted
+       FROM community_posts
        GROUP BY user_id
-     ) ans ON ans.user_id = u.id
+     ) qst ON qst.user_id = u.id
      LEFT JOIN (
        SELECT user_id, COUNT(*) AS badges_count
        FROM badges GROUP BY user_id
