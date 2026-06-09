@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { query } from '@/lib/db';
 import { deductCoins } from '@/lib/coins';
 import { bookSessionSchema } from '@/lib/validators';
+import { sendBookingNotificationEmail } from '@/lib/mail';
 
 async function notifyExpertOfBooking(
   expertId: string,
@@ -10,29 +11,50 @@ async function notifyExpertOfBooking(
   sessionId: string,
   skillDomain: string | null | undefined,
   scheduledDate: string,
+  durationMinutes: number,
+  notes: string | null | undefined,
 ) {
   try {
     const [[expertRow], [userRow], [expertMapping]] = await Promise.all([
-      query<{ name: string }>(`SELECT name FROM industry_experts WHERE id = ?`, [expertId]),
-      query<{ name: string }>(`SELECT name FROM users WHERE id = ?`, [bookerUserId]),
+      query<{ name: string; email: string }>(`SELECT name, email FROM industry_experts WHERE id = ?`, [expertId]),
+      query<{ name: string; email: string }>(`SELECT name, email FROM users WHERE id = ?`, [bookerUserId]),
       query<{ user_id: string }>(`SELECT user_id FROM user_expert_map WHERE expert_id = ?`, [expertId]),
     ]);
-    if (!expertMapping || !userRow) return;
+    if (!expertRow || !userRow) return;
+
     const dateStr = new Date(scheduledDate).toLocaleString('en-GB', {
       day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
     });
-    await query(
-      `INSERT INTO notifications (id, user_id, message, type, reference_id)
-       VALUES (?, ?, ?, 'SESSION_BOOKING', ?)`,
-      [
-        crypto.randomUUID(),
-        expertMapping.user_id,
-        `New booking from ${userRow.name}: "${skillDomain ?? 'General session'}" on ${dateStr}`,
-        sessionId,
-      ],
-    );
-  } catch {
+
+    // In-app notification (only if the expert has a linked user account)
+    if (expertMapping) {
+      await query(
+        `INSERT INTO notifications (id, user_id, message, type, reference_id)
+         VALUES (?, ?, ?, 'SESSION_BOOKING', ?)`,
+        [
+          crypto.randomUUID(),
+          expertMapping.user_id,
+          `New booking from ${userRow.name}: "${skillDomain ?? 'General session'}" on ${dateStr}`,
+          sessionId,
+        ],
+      );
+    }
+
+    // Email notification to the expert
+    await sendBookingNotificationEmail({
+      expertEmail:     expertRow.email,
+      expertName:      expertRow.name,
+      userName:        userRow.name,
+      userEmail:       userRow.email,
+      scheduledDate,
+      durationMinutes,
+      skillDomain,
+      notes,
+      sessionId,
+    });
+  } catch (err: any) {
     // Non-critical — session already created
+    console.warn('[BOOKING-NOTIFY] Failed to send expert notification:', err.message);
   }
 }
 
@@ -86,8 +108,8 @@ export async function POST(req: NextRequest) {
     [sessionId, userId, expert_id, mysqlDate, duration_minutes, coinCost, skill_domain ?? null, notes ?? null],
   );
 
-  // Fire-and-forget: notify the expert that a booking was made
-  notifyExpertOfBooking(expert_id, userId, sessionId, skill_domain, scheduled_date);
+  // Fire-and-forget: notify the expert (in-app + email)
+  notifyExpertOfBooking(expert_id, userId, sessionId, skill_domain, scheduled_date, duration_minutes, notes);
 
   return NextResponse.json({ id: sessionId }, { status: 201 });
 }
