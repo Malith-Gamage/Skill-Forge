@@ -80,7 +80,7 @@ export default function Sidebar({ role }: { role: string }) {
       >
         <div className="w-full border-b border-gray-100 shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/p1.png" alt="SkillForge" style={{ width: '100%', height: 'auto', display: 'block' }} />
+          <img src="/p6.jpeg" alt="SkillForge" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
