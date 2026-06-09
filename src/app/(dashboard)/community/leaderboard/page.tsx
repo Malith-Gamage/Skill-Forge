@@ -28,7 +28,7 @@ function Avatar({ name, index, size = 'md' }: { name: string; index: number; siz
   const grad = avatarPalette[index % avatarPalette.length]
   const sizeClass = size === 'lg' ? 'w-16 h-16 text-xl' : size === 'md' ? 'w-11 h-11 text-sm' : 'w-9 h-9 text-xs'
   return (
-    <div className={`${sizeClass} rounded-full bg-gradient-to-br ${grad} flex items-center justify-center text-white font-bold shrink-0`}>
+    <div className={`${sizeClass} rounded-full bg-linear-to-br ${grad} flex items-center justify-center text-white font-bold shrink-0`}>
       {initials}
     </div>
   )
@@ -87,7 +87,7 @@ export default async function LeaderboardPage() {
     <div className="max-w-4xl mx-auto space-y-6">
 
       {/* ── Hero Banner ── */}
-      <div className="dash-fade-up relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 p-8 text-white shadow-2xl">
+      <div className="dash-fade-up relative overflow-hidden rounded-3xl bg-linear-to-br from-indigo-900 via-indigo-800 to-violet-900 p-8 text-white shadow-2xl">
         {/* background blobs */}
         <div className="pointer-events-none absolute -top-24 -right-16 w-80 h-80 rounded-full bg-white/5 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-12 w-72 h-72 rounded-full bg-violet-400/10 blur-3xl" />
@@ -157,7 +157,7 @@ export default async function LeaderboardPage() {
           <p className="text-sm text-gray-400 mb-6">Be the first to post questions and climb the ranks!</p>
           <Link
             href="/community/feed"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-indigo-600 to-violet-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
           >
             Go to Community
           </Link>
@@ -209,7 +209,7 @@ export default async function LeaderboardPage() {
                     <span className={`text-2xl ${isFirst ? 'lb-crown-anim inline-block' : ''}`}>{mc.medal}</span>
 
                     {/* Avatar with gradient ring */}
-                    <div className={`p-0.5 rounded-full bg-gradient-to-br ${mc.gradient}`}>
+                    <div className={`p-0.5 rounded-full bg-linear-to-br ${mc.gradient}`}>
                       <div className="bg-white p-0.5 rounded-full">
                         <Avatar name={row.name} index={rows.indexOf(row)} size={isFirst ? 'lg' : 'md'} />
                       </div>

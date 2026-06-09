@@ -166,7 +166,7 @@ export async function sendBookingNotificationEmail(opts: {
   await resend.emails.send({
     from:     `${userName} via SkillForge <${FROM}>`,
     to:       expertEmail,
-    reply_to: userEmail,
+    replyTo: userEmail,
     subject:  `New booking: ${topic} on ${new Date(scheduledDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`,
     html,
   });
