@@ -265,12 +265,10 @@ export default function LandingClient() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* ── Navbar ── */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-sm">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-linear-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-200">
-            <IconStar />
-          </div>
-          <span className="text-xl font-bold text-gray-900 tracking-tight">SkillForge</span>
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-2 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+        <div className="flex items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/p6.jpeg" alt="SkillForge" className="h-12 w-auto object-contain" />
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -333,7 +331,7 @@ export default function LandingClient() {
 
         {/* Live rotating skill line */}
         <div className="hero-in-2 flex items-center justify-center gap-2 text-sm text-gray-500 mb-4 relative z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <span>
             Students mastering{' '}
             <RotatingText words={rotatingSkills} />
@@ -518,11 +516,9 @@ export default function LandingClient() {
       {/* ── Footer ── */}
       <footer className="bg-gray-900 text-gray-400 px-6 py-10">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-linear-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center">
-              <IconStar />
-            </div>
-            <span className="text-white font-semibold">SkillForge</span>
+          <div className="flex items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/p6.jpeg" alt="SkillForge" className="h-12 w-auto object-contain" />
           </div>
           <p className="text-sm">© 2026 SkillForge. Designed for learners.</p>
           <div className="flex gap-5 text-sm">

@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, FormEvent } from 'react'
+import { Suspense, useState, FormEvent, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -41,7 +41,23 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [formError, setFormError] = useState('')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const err = params.get('error')
+    if (err && err !== 'suspended') {
+      const messages: Record<string, string> = {
+        google_cancelled: 'Google sign-in was cancelled.',
+        invalid_state: 'OAuth state mismatch — please try again.',
+        token_exchange: 'Could not complete Google sign-in. Please try again.',
+        userinfo: 'Could not retrieve your Google profile. Please try again.',
+        no_email: 'Your Google account does not have an accessible email address.',
+      }
+      setFormError(messages[err] ?? 'Google sign-in failed. Please try again.')
+    }
+  }, [])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -64,6 +80,11 @@ function LoginForm() {
 
     router.push(redirect)
     router.refresh()
+  }
+
+  function handleGoogleSignIn() {
+    setGoogleLoading(true)
+    window.location.href = '/api/auth/google'
   }
 
   return (
@@ -89,7 +110,7 @@ function LoginForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Email address
@@ -152,13 +173,22 @@ function LoginForm() {
         <div className="flex-1 h-px bg-gray-200" />
       </div>
 
-      <a
-        href="/api/auth/google"
-        className="flex items-center justify-center gap-2.5 w-full border border-gray-200 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+      <button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={googleLoading || loading}
+        className="flex items-center justify-center gap-2.5 w-full border border-gray-200 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        <GoogleIcon />
-        Continue with Google
-      </a>
+        {googleLoading ? (
+          <svg className="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        ) : (
+          <GoogleIcon />
+        )}
+        {googleLoading ? 'Signing in with Google…' : 'Continue with Google'}
+      </button>
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Don&apos;t have an account?{' '}
