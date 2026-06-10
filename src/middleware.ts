@@ -13,6 +13,7 @@ export async function middleware(req: NextRequest) {
     '/api/auth/forgot-password',
     '/api/auth/reset-password',
     '/api/auth/verify-email',
+    '/api/auth/google',
   ];
 
   const isPublic =

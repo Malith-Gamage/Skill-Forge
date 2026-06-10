@@ -179,7 +179,7 @@ export default async function LeaderboardPage() {
                     gradient: 'from-amber-400 via-yellow-300 to-amber-500',
                     border: 'border-amber-300',
                     shadow: 'shadow-amber-200/60',
-                    height: 'pt-8 pb-6',
+                    height: 'pt-4 pb-6',
                   },
                   2: {
                     medal: '🥈',
@@ -205,15 +205,29 @@ export default async function LeaderboardPage() {
                     className={`lb-podium-card lb-podium-in rounded-2xl border ${mc.border} shadow-lg ${mc.shadow} bg-white flex flex-col items-center text-center gap-2 px-3 ${mc.height}`}
                     style={{ animationDelay: `${delay}s` }}
                   >
-                    {/* Crown / medal */}
-                    <span className={`text-2xl ${isFirst ? 'lb-crown-anim inline-block' : ''}`}>{mc.medal}</span>
-
-                    {/* Avatar with gradient ring */}
-                    <div className={`p-0.5 rounded-full bg-linear-to-br ${mc.gradient}`}>
-                      <div className="bg-white p-0.5 rounded-full">
-                        <Avatar name={row.name} index={rows.indexOf(row)} size={isFirst ? 'lg' : 'md'} />
-                      </div>
-                    </div>
+                    {/* Avatar / trophy */}
+                    {row.rank === 1 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="/stage 1.png"
+                        alt=""
+                        className="lb-crown-anim w-36 h-36 object-fill drop-shadow-xl"
+                      />
+                    ) : row.rank === 2 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="/stage 2.png"
+                        alt=""
+                        className="w-36 h-36 object-fill drop-shadow-xl"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="/stage 3.png"
+                        alt=""
+                        className="w-36 h-36 object-fill drop-shadow-xl"
+                      />
+                    )}
 
                     {/* Name */}
                     <div className="min-w-0 w-full">
@@ -280,7 +294,15 @@ export default async function LeaderboardPage() {
                     </span>
 
                     {/* Avatar */}
-                    <Avatar name={row.name} index={globalIdx} size="sm" />
+                    {row.rank === 4 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src="/stage 4.png" alt="" className="w-9 h-9 object-fill shrink-0" />
+                    ) : row.rank === 5 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src="/stage 5.png" alt="" className="w-9 h-9 object-fill shrink-0" />
+                    ) : (
+                      <Avatar name={row.name} index={globalIdx} size="sm" />
+                    )}
 
                     {/* Name */}
                     <div className="flex-1 min-w-0">
