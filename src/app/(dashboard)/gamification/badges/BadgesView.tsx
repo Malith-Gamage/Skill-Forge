@@ -89,8 +89,7 @@ export default function BadgesView({
               Achievement Gallery
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-              Your Badges{' '}
-              <span role="img" aria-label="medal">🏅</span>
+              Your Badges
             </h1>
             <p className="mt-2 text-indigo-200/80 text-sm leading-relaxed">
               {!hasContent

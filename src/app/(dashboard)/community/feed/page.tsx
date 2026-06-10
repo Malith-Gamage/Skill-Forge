@@ -166,8 +166,7 @@ export default async function CommunityFeedPage({
               Learner Hub
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-              Community{' '}
-              <span role="img" aria-label="community">🤝</span>
+              Community
             </h1>
             <p className="mt-2 text-indigo-200/80 text-sm leading-relaxed">
               Share knowledge, ask questions, and grow together
