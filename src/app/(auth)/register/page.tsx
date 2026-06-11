@@ -122,7 +122,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
@@ -131,23 +131,23 @@ export default function RegisterPage() {
               <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" />
             </svg>
           </div>
-          <span className="text-xl font-bold text-gray-900">SkillForge</span>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">SkillForge</span>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
-          <p className="text-gray-500 text-sm mb-6">Start your learning journey today</p>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-8">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Create your account</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Start your learning journey today</p>
 
           {/* Rate-limit banner */}
           {rateLimitMinutes && (
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+            <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg text-sm text-amber-700 dark:text-amber-300">
               Too many attempts. Try again in {rateLimitMinutes} minutes.
             </div>
           )}
 
           {/* Generic error banner */}
           {formError && !rateLimitMinutes && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg text-sm text-red-600 dark:text-red-400">
               {formError}
             </div>
           )}
@@ -157,7 +157,7 @@ export default function RegisterPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {googleLoading ? (
               <svg className="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
@@ -177,16 +177,16 @@ export default function RegisterPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+            <span className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wide">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
           </div>
 
           {/* Registration form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Full name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Full name
               </label>
               <input
@@ -196,8 +196,8 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Kasun Perera"
-                className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                  fieldErrors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${
+                  fieldErrors.name ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'
                 }`}
               />
               {fieldErrors.name && <p className="mt-1 text-xs text-red-500">{fieldErrors.name}</p>}
@@ -205,7 +205,7 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Email address
               </label>
               <input
@@ -215,8 +215,8 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                  fieldErrors.email ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${
+                  fieldErrors.email ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'
                 }`}
               />
               {fieldErrors.email && <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>}
@@ -224,7 +224,7 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password
               </label>
               <div className="relative">
@@ -235,8 +235,8 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                    fieldErrors.password ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${
+                    fieldErrors.password ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'
                   }`}
                 />
                 <button
@@ -244,7 +244,7 @@ export default function RegisterPage() {
                   onClick={() => setShowPassword((v) => !v)}
                   tabIndex={-1}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -259,7 +259,7 @@ export default function RegisterPage() {
                       <div
                         key={i}
                         className={`h-1 flex-1 rounded-full transition-colors ${
-                          i <= strength.score ? strength.barColor : 'bg-gray-200'
+                          i <= strength.score ? strength.barColor : 'bg-gray-200 dark:bg-gray-700'
                         }`}
                       />
                     ))}
@@ -282,7 +282,7 @@ export default function RegisterPage() {
                     <li
                       key={label}
                       className={`flex items-center gap-1.5 text-xs transition-colors ${
-                        ok ? 'text-green-600' : 'text-gray-400'
+                        ok ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'
                       }`}
                     >
                       {ok ? <Check className="w-3 h-3 shrink-0" /> : <X className="w-3 h-3 shrink-0" />}
@@ -295,7 +295,7 @@ export default function RegisterPage() {
 
             {/* Confirm password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirm password
               </label>
               <div className="relative">
@@ -306,8 +306,8 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password"
-                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                    fieldErrors.confirmPassword ? 'border-red-400 bg-red-50' : 'border-gray-200'
+                  className={`w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${
+                    fieldErrors.confirmPassword ? 'border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-600'
                   }`}
                 />
                 <button
@@ -315,7 +315,7 @@ export default function RegisterPage() {
                   onClick={() => setShowConfirm((v) => !v)}
                   tabIndex={-1}
                   aria-label={showConfirm ? 'Hide password' : 'Show password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
                 >
                   {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -334,15 +334,15 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-xs text-gray-400">
+          <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
             By signing up you agree to our{' '}
-            <span className="underline cursor-pointer hover:text-gray-600">Terms of Service</span> and{' '}
-            <span className="underline cursor-pointer hover:text-gray-600">Privacy Policy</span>.
+            <span className="underline cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">Terms of Service</span> and{' '}
+            <span className="underline cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">Privacy Policy</span>.
           </p>
 
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
             Already have an account?{' '}
-            <Link href="/login" className="text-indigo-600 font-medium hover:underline">
+            <Link href="/login" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
               Sign in
             </Link>
           </p>

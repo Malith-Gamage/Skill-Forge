@@ -28,16 +28,16 @@ function timeAgo(date: string) {
 export default function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/community/post/${post.id}`}>
-      <div className="bg-white rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-sm p-4 transition-all flex flex-col gap-3">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 hover:shadow-sm p-4 transition-all flex flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-semibold text-gray-800 text-sm leading-snug">{post.title}</h3>
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm leading-snug">{post.title}</h3>
           <Badge
             label={post.status}
             color={post.status === 'ANSWERED' ? 'green' : post.status === 'CLOSED' ? 'gray' : 'blue'}
             size="sm"
           />
         </div>
-        <div className="flex items-center gap-4 text-xs text-gray-400">
+        <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
           <span>by {post.user_name}</span>
           <span>{timeAgo(post.created_at)}</span>
           {post.skill_domain && <Badge label={post.skill_domain} color="purple" size="sm" />}
@@ -45,7 +45,7 @@ export default function PostCard({ post }: PostCardProps) {
             <span className="flex items-center gap-1">
               <MessageSquare className="w-3.5 h-3.5" /> {post.answer_count}
             </span>
-            <span className="flex items-center gap-1 text-amber-600">
+            <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
               <Coins className="w-3.5 h-3.5" /> {post.coin_cost}
             </span>
           </div>

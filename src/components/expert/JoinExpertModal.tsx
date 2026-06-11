@@ -80,8 +80,8 @@ export default function JoinExpertModal({ userName }: { userName: string }) {
   }
 
   const inputCls =
-    'w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition placeholder:text-gray-300'
-  const labelCls = 'block text-sm font-semibold text-gray-700 mb-1.5'
+    'w-full px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition placeholder:text-gray-300 dark:placeholder:text-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+  const labelCls = 'block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5'
 
   const modal = (
     <div
@@ -90,18 +90,17 @@ export default function JoinExpertModal({ userName }: { userName: string }) {
       onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white rounded-t-2xl z-10">
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between sticky top-0 bg-white dark:bg-gray-900 rounded-t-2xl z-10">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Join as Expert</h2>
-            <p className="text-sm text-gray-400 mt-0.5">Share your expertise with SkillForge learners</p>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Join as Expert</h2>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">Share your expertise with SkillForge learners</p>
           </div>
           <button
             onClick={close}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -112,122 +111,73 @@ export default function JoinExpertModal({ userName }: { userName: string }) {
         <div className="px-6 py-5">
           {done ? (
             <div className="flex flex-col items-center py-10 gap-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                <svg className="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </div>
               <div className="text-center">
-                <p className="text-base font-bold text-gray-900">You&apos;re now an Expert!</p>
-                <p className="text-sm text-gray-400 mt-1">Your profile is live and learners can book sessions with you.</p>
+                <p className="text-base font-bold text-gray-900 dark:text-white">You&apos;re now an Expert!</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Your profile is live and learners can book sessions with you.</p>
               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
 
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 flex items-start gap-3">
-                <svg className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-xl px-4 py-3 flex items-start gap-3">
+                <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clipRule="evenodd" />
                 </svg>
-                <p className="text-xs text-indigo-700 leading-relaxed">
+                <p className="text-xs text-indigo-700 dark:text-indigo-300 leading-relaxed">
                   Your profile will be instantly published. Learners can book sessions and pay with SCS coins.
                 </p>
               </div>
 
               <div>
                 <label className={labelCls}>Full Name</label>
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Your full name"
-                  className={inputCls}
-                />
+                <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your full name" className={inputCls} />
               </div>
 
               <div>
                 <label className={labelCls}>Field of Expertise</label>
-                <input
-                  type="text"
-                  required
-                  value={fieldOfExpertise}
-                  onChange={(e) => setFieldOfExpertise(e.target.value)}
-                  placeholder="e.g. Machine Learning, Full-Stack Development"
-                  className={inputCls}
-                />
+                <input type="text" required value={fieldOfExpertise} onChange={(e) => setFieldOfExpertise(e.target.value)} placeholder="e.g. Machine Learning, Full-Stack Development" className={inputCls} />
               </div>
 
               <div>
                 <label className={labelCls}>
-                  Skills <span className="text-gray-400 font-normal">(comma-separated)</span>
+                  Skills <span className="text-gray-400 dark:text-gray-500 font-normal">(comma-separated)</span>
                 </label>
-                <input
-                  type="text"
-                  value={skills}
-                  onChange={(e) => setSkills(e.target.value)}
-                  placeholder="e.g. Python, TensorFlow, React, Node.js"
-                  className={inputCls}
-                />
+                <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. Python, TensorFlow, React, Node.js" className={inputCls} />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Years of Experience</label>
-                  <input
-                    type="number"
-                    min={0}
-                    max={50}
-                    value={yearsExperience}
-                    onChange={(e) => setYearsExperience(e.target.value)}
-                    placeholder="e.g. 5"
-                    className={inputCls}
-                  />
+                  <input type="number" min={0} max={50} value={yearsExperience} onChange={(e) => setYearsExperience(e.target.value)} placeholder="e.g. 5" className={inputCls} />
                 </div>
                 <div>
                   <label className={labelCls}>
-                    Hourly Rate <span className="text-gray-400 font-normal">(SCS)</span>
+                    Hourly Rate <span className="text-gray-400 dark:text-gray-500 font-normal">(SCS)</span>
                   </label>
-                  <input
-                    type="number"
-                    min={50}
-                    max={10000}
-                    required
-                    value={hourlyRate}
-                    onChange={(e) => setHourlyRate(e.target.value)}
-                    placeholder="100"
-                    className={inputCls}
-                  />
+                  <input type="number" min={50} max={10000} required value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="100" className={inputCls} />
                 </div>
               </div>
 
               <div>
                 <label className={labelCls}>Bio</label>
-                <textarea
-                  rows={3}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="Introduce yourself — your background, what you love teaching, your approach…"
-                  className={`${inputCls} resize-none`}
-                />
+                <textarea rows={3} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Introduce yourself — your background, what you love teaching, your approach…" className={`${inputCls} resize-none`} />
               </div>
 
               <div>
                 <label className={labelCls}>
-                  LinkedIn / Portfolio URL <span className="text-gray-400 font-normal">(optional)</span>
+                  LinkedIn / Portfolio URL <span className="text-gray-400 dark:text-gray-500 font-normal">(optional)</span>
                 </label>
-                <input
-                  type="url"
-                  value={linkedinUrl}
-                  onChange={(e) => setLinkedinUrl(e.target.value)}
-                  placeholder="https://linkedin.com/in/yourname"
-                  className={inputCls}
-                />
+                <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} placeholder="https://linkedin.com/in/yourname" className={inputCls} />
               </div>
 
               {error && (
-                <div className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
-                  <svg className="w-4 h-4 shrink-0 mt-0.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-start gap-2.5 p-3.5 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl text-sm text-red-600 dark:text-red-400">
+                  <svg className="w-4 h-4 shrink-0 mt-0.5 text-red-500 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
                   </svg>
                   {error}
@@ -238,7 +188,7 @@ export default function JoinExpertModal({ userName }: { userName: string }) {
                 <button
                   type="button"
                   onClick={close}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
                 >
                   Cancel
                 </button>

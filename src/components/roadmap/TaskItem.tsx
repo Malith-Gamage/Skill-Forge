@@ -56,7 +56,6 @@ export default function TaskItem({ task, index = 0 }: TaskItemProps) {
       }`}
       onClick={!done ? complete : undefined}
     >
-      {/* Checkbox */}
       <button
         onClick={(e) => { e.stopPropagation(); complete() }}
         disabled={done || loading}
@@ -64,8 +63,8 @@ export default function TaskItem({ task, index = 0 }: TaskItemProps) {
           done
             ? 'bg-green-500 border-green-500 shadow-sm'
             : loading
-            ? 'border-indigo-300 bg-indigo-50'
-            : 'border-gray-300 group-hover:border-indigo-400'
+            ? 'border-indigo-300 bg-indigo-50 dark:bg-indigo-900/30'
+            : 'border-gray-300 dark:border-gray-600 group-hover:border-indigo-400'
         }`}
         aria-label={done ? 'Completed' : 'Mark complete'}
       >
@@ -79,21 +78,19 @@ export default function TaskItem({ task, index = 0 }: TaskItemProps) {
         )}
       </button>
 
-      {/* Title */}
       <p className={`flex-1 text-sm font-medium min-w-0 transition-colors duration-200 ${
-        done ? 'text-gray-400 line-through' : 'text-gray-800'
+        done ? 'text-gray-400 dark:text-gray-500 line-through' : 'text-gray-800 dark:text-gray-100'
       }`}>
         {task.title}
       </p>
 
-      {/* Coin reward */}
       <div className={`flex items-center gap-1 shrink-0 transition-all duration-200 ${
         done ? 'opacity-30' : ''
       }`}>
         <svg className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM9.555 7.168A1 1 0 0 0 8 8v4a1 1 0 0 0 1.555.832l3-2a1 1 0 0 0 0-1.664l-3-2Z" clipRule="evenodd" />
         </svg>
-        <span className={`text-xs font-bold ${done ? 'text-gray-300' : 'text-amber-500'}`}>
+        <span className={`text-xs font-bold ${done ? 'text-gray-300 dark:text-gray-600' : 'text-amber-500'}`}>
           +{task.coin_reward}
         </span>
       </div>

@@ -1,14 +1,37 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: applies dark: variants when .dark is on any ancestor */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8f9fa;
   --foreground: #111827;
+  --card-bg: #ffffff;
+  --card-border: #f3f4f6;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --border: #e5e7eb;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-bg: var(--background);
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-fg: var(--muted-foreground);
+  --color-border: var(--border);
   --color-primary: #4f46e5;
   --color-primary-end: #7c3aed;
   --font-sans: var(--font-geist-sans);
@@ -493,4 +516,19 @@ body {
 .badge-card-community:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
+
+/* ── Dark mode overrides for plain-CSS hover classes ──────────────── */
+.dark .task-row:not(.task-done):hover {
+  background: rgba(79, 70, 229, 0.12);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
+}
+
+.dark .lb-row:hover {
+  background: rgba(79, 70, 229, 0.12);
+}
+
+.dark .resource-row:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
