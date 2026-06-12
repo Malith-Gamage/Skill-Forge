@@ -21,8 +21,8 @@ export default function TaskList({ tasks }: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="text-center py-10">
-        <BookOpen className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-        <p className="text-gray-500 text-sm">
+        <BookOpen className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
           No tasks yet.{' '}
           <Link href="/roadmap/search" className="text-primary font-semibold hover:underline">
             Create a roadmap
@@ -36,7 +36,7 @@ export default function TaskList({ tasks }: TaskListProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-500">{completed}/{tasks.length} completed</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">{completed}/{tasks.length} completed</span>
       </div>
       <div className="flex flex-col gap-2">
         {tasks.map((task) => (

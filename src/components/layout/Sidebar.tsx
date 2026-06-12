@@ -62,11 +62,11 @@ export default function Sidebar({ role }: { role: string }) {
   return (
     <>
       <button
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white rounded-lg p-2 shadow border border-gray-200"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white dark:bg-gray-900 rounded-lg p-2 shadow border border-gray-200 dark:border-gray-700"
         onClick={() => setOpen(!open)}
         aria-label="Menu"
       >
-        <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
       </button>
@@ -76,9 +76,9 @@ export default function Sidebar({ role }: { role: string }) {
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-56 bg-white border-r border-gray-100 flex flex-col transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed lg:static inset-y-0 left-0 z-40 w-56 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        <div className="w-full border-b border-gray-100 shrink-0">
+        <div className="w-full border-b border-gray-100 dark:border-gray-800 shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/p6.jpeg" alt="SkillForge" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </div>
@@ -91,12 +91,12 @@ export default function Sidebar({ role }: { role: string }) {
               onClick={() => setOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 active(link.href)
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               <svg
-                className={`w-5 h-5 shrink-0 ${active(link.href) ? 'text-indigo-600' : 'text-gray-400'}`}
+                className={`w-5 h-5 shrink-0 ${active(link.href) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'}`}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={1.75}
@@ -109,12 +109,12 @@ export default function Sidebar({ role }: { role: string }) {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-gray-100 shrink-0">
+        <div className="p-3 border-t border-gray-100 dark:border-gray-800 shrink-0">
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
-            <svg className="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
             </svg>
             Sign out

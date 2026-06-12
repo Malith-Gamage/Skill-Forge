@@ -197,7 +197,7 @@ export default function ProfilePage() {
                 <div
                   className="group relative shrink-0 cursor-pointer"
                   onClick={() => !uploading && fileInputRef.current?.click()}
-                  title="Change photo"
+                  title="Edit Profile"
                 >
                   {displaySrc ? (
                     <img
@@ -250,7 +250,7 @@ export default function ProfilePage() {
                   disabled={uploading}
                   className="px-5 py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
                 >
-                  {uploading ? 'Uploading…' : 'Change photo'}
+                  {uploading ? 'Uploading…' : 'Edit Profile'}
                 </button>
                 <span className="text-xs text-gray-400 text-center">JPEG, PNG or WebP · max 5 MB</span>
               </div>

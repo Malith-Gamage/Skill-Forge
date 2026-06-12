@@ -11,34 +11,33 @@ interface AnswerAnalysis {
 }
 
 const qualityStyle: Record<string, { wrap: string; badge: string; title: string; icon: 'check' | 'warn' | 'x' }> = {
-  Excellent: { wrap: 'bg-emerald-50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', title: 'text-emerald-700', icon: 'check' },
-  Good:      { wrap: 'bg-indigo-50 border-indigo-200',   badge: 'bg-indigo-100 text-indigo-700 border-indigo-200',   title: 'text-indigo-700',  icon: 'check' },
-  Fair:      { wrap: 'bg-amber-50 border-amber-200',     badge: 'bg-amber-100 text-amber-700 border-amber-200',     title: 'text-amber-700',   icon: 'warn'  },
-  Poor:      { wrap: 'bg-red-50 border-red-200',         badge: 'bg-red-100 text-red-700 border-red-200',           title: 'text-red-700',     icon: 'x'     },
+  Excellent: { wrap: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700', title: 'text-emerald-700 dark:text-emerald-400', icon: 'check' },
+  Good:      { wrap: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-700',   badge: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700',   title: 'text-indigo-700 dark:text-indigo-400',  icon: 'check' },
+  Fair:      { wrap: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700',     badge: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700',     title: 'text-amber-700 dark:text-amber-400',   icon: 'warn'  },
+  Poor:      { wrap: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700',         badge: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-700',           title: 'text-red-700 dark:text-red-400',     icon: 'x'     },
 }
 
 function QualityIcon({ type }: { type: 'check' | 'warn' | 'x' }) {
   const base = 'w-4 h-4'
   if (type === 'check')
     return (
-      <svg className={`${base} text-emerald-600`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+      <svg className={`${base} text-emerald-600 dark:text-emerald-400`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
       </svg>
     )
   if (type === 'warn')
     return (
-      <svg className={`${base} text-amber-600`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+      <svg className={`${base} text-amber-600 dark:text-amber-400`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
       </svg>
     )
   return (
-    <svg className={`${base} text-red-600`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+    <svg className={`${base} text-red-600 dark:text-red-400`} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9.303 3.376c.866 1.5-.217 3.374-1.948 3.374H4.645c-1.73 0-2.813-1.874-1.948-3.374L10.051 3.378c.866-1.5 3.032-1.5 3.898 0L21.303 16.126ZM12 15.75h.007v.008H12v-.008Z" />
     </svg>
   )
 }
 
-// ── Coin icon (shared) ──────────────────────────────────────────────
 function CoinIcon({ className }: { className?: string }) {
   return (
     <svg className={className ?? 'w-4 h-4'} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -47,7 +46,6 @@ function CoinIcon({ className }: { className?: string }) {
   )
 }
 
-// ── Fixed coin notification toast ───────────────────────────────────
 function CoinToast({ delta, onDone }: { delta: number; onDone: () => void }) {
   const [exiting, setExiting] = useState(false)
 
@@ -71,16 +69,15 @@ function CoinToast({ delta, onDone }: { delta: number; onDone: () => void }) {
         exiting ? 'coin-toast-out' : 'coin-toast'
       } ${
         positive
-          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-          : 'bg-red-50 border-red-200 text-red-700'
+          ? 'bg-emerald-50 dark:bg-emerald-900/40 border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300'
+          : 'bg-red-50 dark:bg-red-900/40 border-red-200 dark:border-red-700 text-red-700 dark:text-red-300'
       }`}
       onClick={dismiss}
     >
-      <CoinIcon className={`w-5 h-5 ${positive ? 'text-emerald-500' : 'text-red-400'}`} />
+      <CoinIcon className={`w-5 h-5 ${positive ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-400'}`} />
       <span>
         {positive ? `+${delta} coins earned!` : `${Math.abs(delta)} coins deducted`}
       </span>
-      {/* Thin progress bar that drains over 3.2 s */}
       <div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-b-2xl overflow-hidden">
         <div
           className={`h-full ${positive ? 'bg-emerald-300' : 'bg-red-300'}`}
@@ -91,7 +88,6 @@ function CoinToast({ delta, onDone }: { delta: number; onDone: () => void }) {
   )
 }
 
-// ── Rejection banner (above textarea when answer is not posted) ──────
 function RejectionBanner({
   analysis,
   onDismiss,
@@ -107,7 +103,7 @@ function RejectionBanner({
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-            analysis.quality === 'Fair' ? 'bg-amber-100' : 'bg-red-100'
+            analysis.quality === 'Fair' ? 'bg-amber-100 dark:bg-amber-900/40' : 'bg-red-100 dark:bg-red-900/40'
           }`}>
             <QualityIcon type={style.icon} />
           </div>
@@ -118,7 +114,7 @@ function RejectionBanner({
                 {analysis.quality} · {analysis.score}/10
               </span>
             </div>
-            <p className="text-[10px] text-gray-400 mt-0.5 uppercase tracking-widest font-semibold">
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 uppercase tracking-widest font-semibold">
               AI Quality Evaluation
             </p>
           </div>
@@ -126,7 +122,7 @@ function RejectionBanner({
         <button
           type="button"
           onClick={onDismiss}
-          className="text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors shrink-0"
           aria-label="Dismiss feedback"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -135,16 +131,16 @@ function RejectionBanner({
         </button>
       </div>
 
-      <p className="text-sm text-gray-700 leading-relaxed">{analysis.feedback}</p>
+      <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{analysis.feedback}</p>
 
       {analysis.suggestions?.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-gray-200/60">
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+        <div className="mt-4 pt-3 border-t border-gray-200/60 dark:border-gray-700/60">
+          <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">
             How to improve your answer
           </p>
           <ul className="space-y-1.5">
             {analysis.suggestions.map((s, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
+              <li key={i} className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
                 <span className={`font-bold shrink-0 mt-0.5 ${arrowColor}`}>→</span>
                 {s}
               </li>
@@ -153,19 +149,18 @@ function RejectionBanner({
         </div>
       )}
 
-      <p className="text-xs text-gray-400 mt-3">Edit your answer below and resubmit.</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Edit your answer below and resubmit.</p>
     </div>
   )
 }
 
-// ── Success panel (replaces form after a correct answer is posted) ───
 function SuccessPanel({ analysis }: { analysis: AnswerAnalysis }) {
   const style = qualityStyle[analysis.quality] ?? qualityStyle.Good
 
   return (
     <div className={`rounded-2xl border p-5 ${style.wrap}`}>
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
           <QualityIcon type="check" />
         </div>
         <div>
@@ -177,17 +172,16 @@ function SuccessPanel({ analysis }: { analysis: AnswerAnalysis }) {
               {analysis.quality} · {analysis.score}/10
             </span>
           </div>
-          <p className="text-[10px] text-gray-400 mt-0.5 uppercase tracking-widest font-semibold">
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 uppercase tracking-widest font-semibold">
             AI Quality Evaluation
           </p>
         </div>
       </div>
-      <p className="text-sm text-gray-700 leading-relaxed">{analysis.feedback}</p>
+      <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{analysis.feedback}</p>
     </div>
   )
 }
 
-// ── Main form ────────────────────────────────────────────────────────
 export function AnswerForm({ postId }: { postId: string }) {
   const router = useRouter()
   const [content, setContent]       = useState('')
@@ -219,10 +213,7 @@ export function AnswerForm({ postId }: { postId: string }) {
       return
     }
 
-    // Show coin toast for any non-zero change
     if (data.coinDelta !== 0) setCoinDelta(data.coinDelta ?? null)
-
-    // Always refresh so the Navbar coin balance updates
     router.refresh()
 
     if (data.posted) {
@@ -230,7 +221,6 @@ export function AnswerForm({ postId }: { postId: string }) {
       setPosted(true)
       setAiFeedback(data.analysis ?? null)
     } else {
-      // Keep content so user can revise
       setAiFeedback(data.analysis ?? null)
     }
   }
@@ -240,7 +230,6 @@ export function AnswerForm({ postId }: { postId: string }) {
 
   return (
     <>
-      {/* Fixed coin toast — rendered outside the card so it sits at screen edge */}
       {coinDelta !== null && (
         <CoinToast delta={coinDelta} onDone={() => setCoinDelta(null)} />
       )}
@@ -259,12 +248,12 @@ export function AnswerForm({ postId }: { postId: string }) {
           placeholder="Share your knowledge. Be specific and clear…"
           rows={5}
           disabled={loading}
-          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition placeholder:text-gray-300 disabled:opacity-60"
+          className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition placeholder:text-gray-300 dark:placeholder:text-gray-600 disabled:opacity-60 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
         />
 
         {error && (
-          <div className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
-            <svg className="w-4 h-4 shrink-0 mt-0.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex items-start gap-2.5 p-3.5 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl text-sm text-red-600 dark:text-red-400">
+            <svg className="w-4 h-4 shrink-0 mt-0.5 text-red-500 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
             </svg>
             {error}
@@ -316,7 +305,7 @@ export function AcceptButton({
     <button
       onClick={accept}
       disabled={loading}
-      className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 px-3 py-1.5 rounded-xl transition-colors disabled:opacity-60 shrink-0"
+      className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 px-3 py-1.5 rounded-xl transition-colors disabled:opacity-60 shrink-0"
     >
       {loading ? (
         <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
