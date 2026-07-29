@@ -2,6 +2,7 @@ import { getSession } from '@/lib/auth'
 import { query } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import RefreshLeaderboardButton from '@/components/community/RefreshLeaderboardButton'
 
 export const metadata = { title: 'Community — SkillForge' }
 
@@ -342,6 +343,7 @@ export default async function CommunityFeedPage({
                 </svg>
               </div>
               <h2 className="text-sm font-bold text-gray-900 flex-1">Top Learners</h2>
+              <RefreshLeaderboardButton />
               <Link href="/community/leaderboard" className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
                 View all →
               </Link>

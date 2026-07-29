@@ -6,12 +6,16 @@ import type { ReactNode } from 'react'
 import RemoveRoadmapButton from '@/components/dashboard/RemoveRoadmapButton'
 import AnimatedBar from '@/components/dashboard/AnimatedBar'
 import CountUp from '@/components/dashboard/CountUp'
+import { reactivateDueTasks } from '@/lib/tasks'
+import RefreshLeaderboardButton from '@/components/community/RefreshLeaderboardButton'
 
 export const metadata = { title: 'Dashboard — SkillForge' }
 
 export default async function DashboardPage() {
   const session = await getSession()
   if (!session) redirect('/login')
+
+  await reactivateDueTasks(session.userId)
 
   const [profile] = await query<{ name: string; coin_balance: number; learning_streak: number }>(
     `SELECT u.name, p.coin_balance, p.learning_streak
@@ -316,9 +320,12 @@ export default async function DashboardPage() {
           <div className="dash-slide-right dash-d-4 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Top Learners</p>
-              <Link href="/community/leaderboard" className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                View all →
-              </Link>
+              <div className="flex items-center gap-1">
+                <RefreshLeaderboardButton />
+                <Link href="/community/leaderboard" className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+                  View all →
+                </Link>
+              </div>
             </div>
 
             {leaderboard.length === 0 ? (

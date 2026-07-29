@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization');
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`)
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const userId = req.headers.get('x-user-id');
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  // Rebuild leaderboard using MySQL UPSERT
   await query(
     `INSERT INTO leaderboard (id, user_id, total_answers, coins_earned, badges_count, \`rank\`)
      SELECT

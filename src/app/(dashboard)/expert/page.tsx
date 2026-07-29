@@ -3,6 +3,7 @@ import { query } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import JoinExpertModal from '@/components/expert/JoinExpertModal'
+import RefreshButton from '@/components/ui/RefreshButton'
 
 export const metadata = { title: 'Expert Sessions — SkillForge' }
 
@@ -69,6 +70,7 @@ export default async function ExpertDirectoryPage() {
             <p className="text-indigo-200 text-sm mt-1">Book 1-on-1 sessions with industry professionals · 3,000 SCS per session</p>
           </div>
           <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <RefreshButton variant="dark" />
             {userApplication ? (
               <>
                 <Link

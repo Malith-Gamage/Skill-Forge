@@ -2,6 +2,7 @@ import { getSession } from '@/lib/auth'
 import { query } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import RefreshLeaderboardButton from '@/components/community/RefreshLeaderboardButton'
 
 export const metadata = { title: 'Leaderboard — SkillForge' }
 
@@ -107,6 +108,7 @@ export default async function LeaderboardPage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight mb-2 flex items-center gap-3">
               Leaderboard
               <span className="lb-crown-anim inline-block">🏆</span>
+              <RefreshLeaderboardButton variant="dark" label="Refresh" />
             </h1>
             <p className="text-indigo-200/80 text-sm max-w-xs">
               Top contributors ranked by coins earned. Keep posting to climb the ranks!

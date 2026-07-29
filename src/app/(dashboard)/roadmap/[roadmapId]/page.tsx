@@ -4,6 +4,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import TaskItem from '@/components/roadmap/TaskItem'
 import CheckpointSidebar from '@/components/roadmap/CheckpointSidebar'
+import { reactivateDueTasks } from '@/lib/tasks'
 
 interface Checkpoint {
   id: string
@@ -82,6 +83,8 @@ export default async function RoadmapDetailPage({
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
+
+  await reactivateDueTasks(session.userId)
 
   const { roadmapId } = await params
   const { cp }        = await searchParams

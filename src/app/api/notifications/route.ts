@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { generateTaskReminders } from '@/lib/tasks';
 
 export async function GET(req: NextRequest) {
   const userId = req.headers.get('x-user-id');
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  await generateTaskReminders(userId);
 
   const notifications = await query<any>(
     `SELECT id, message, type, is_read, reference_id, sent_at AS created_at

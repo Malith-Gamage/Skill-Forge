@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   if (auth !== `Bearer ${process.env.CRON_SECRET}`)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  // Find sessions starting in the next 23–25 hours (cron runs hourly, so this window fires once)
+  // Find sessions scheduled for tomorrow (cron runs once daily, so cover the full next calendar day)
   const upcoming = await query<any>(
     `SELECT s.id, s.scheduled_date, s.duration_minutes,
             u.email, u.name AS user_name,
@@ -16,8 +16,7 @@ export async function POST(req: NextRequest) {
      JOIN users u            ON u.id = s.user_id
      JOIN industry_experts e ON e.id = s.expert_id
      WHERE s.status IN ('PENDING', 'CONFIRMED')
-       AND s.scheduled_date BETWEEN DATE_ADD(NOW(), INTERVAL 23 HOUR)
-                                AND DATE_ADD(NOW(), INTERVAL 25 HOUR)`,
+       AND DATE(s.scheduled_date) = DATE(DATE_ADD(NOW(), INTERVAL 1 DAY))`,
   );
 
   let sent = 0;
